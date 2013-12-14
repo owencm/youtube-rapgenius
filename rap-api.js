@@ -42,7 +42,6 @@ var processTitleText = function(songText) {
     return songText;
 }
 
-// Todo: implement me: http://www-googleapis-test.sandbox.google.com/youtubeMusic/v1/musicVideos/X7bHe--mp1g?countryCode=us
 var getMetaData = function(id, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
@@ -60,6 +59,20 @@ var getMetaData = function(id, callback) {
 	xhr.setRequestHeader("Accept", "application/x-javascript, text/javascript, text/html, application/xml, text/xml, */*");
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.send();
+}
+
+var getAnnotatedLyrics = function(url, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			// console.log("RapGenius responded: "+xhr.responseText);
+			var rapHtml = $(xhr.responseText);
+			console.log(rapHtml.find(".lyrics")[0]);
+			callback({});
+		}
+	}
+	xhr.open("GET", url, true);
+	xhr.send();	
 }
 
 chrome.runtime.onMessage.addListener(
@@ -81,8 +94,9 @@ chrome.runtime.onMessage.addListener(
 
 			getSongUrl(queryText, function(url) {
 				if (url) {
-			    	console.log (url);
-			    	sendResponse({success: true, lyrics: url});
+					getAnnotatedLyrics(url, function(annotatedLyrics) {
+			    		sendResponse({success: true, lyrics: annotatedLyrics});
+					})
 				} else {
 					sendResponse({success: false});
 				}

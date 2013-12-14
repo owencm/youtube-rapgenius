@@ -5,11 +5,11 @@
   "description": "This extension demonstrates a browser action with kittens.",
   "version": "1.0",
   "permissions": [
-    "http://rock.rapgenius.com/",
-    "http://rapgenius.com/"
+    "http://*.rapgenius.com/"
   ],
   "background": {
-    "scripts": ["rap-api.js"],
+    // "scripts": ["rap-api.js"],
+    "page": "background.html",
     "persistent": false
   },
   "content_scripts": [
